@@ -1,0 +1,34 @@
+[core]
+	editor = vim
+[commit]
+	gpgSign = true
+[alias]
+	c = commit
+	co = checkout
+	st = status
+	lg = log --oneline --abbrev=12
+	br = branch
+	ff = merge --ff-only
+	r = rebase
+	rc = rebase --continue
+	ra = rebase --abort
+	ri = rebase --interactive
+	rs = rebase --skip
+	cp = cherry-pick
+	cpa = cherry-pick --abort
+	cpc = cherry-pick --continue
+	slog = log --show-signature
+	rp = rev-parse
+	f = fetch
+	fa = fetch --all
+	p = push
+	pf = push --force-with-lease
+	wt = worktree
+	mitm = "!f(){ git config --global http.proxy 'http://127.0.0.1:8080'; }; f"
+	unmitm = "!f(){ git config --global --unset http.proxy; }; f"
+[fetch]
+	prune = true
+[init]
+	defaultBranch = main
+[rebase]
+	autosquash = true
