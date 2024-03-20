@@ -1,7 +1,5 @@
 [core]
 	editor = vim
-[commit]
-	gpgSign = true
 [alias]
 	c = commit
 	co = checkout
