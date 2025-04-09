@@ -1,5 +1,6 @@
 [core]
 	editor = vim
+	fsmonitor = true
 [alias]
 	c = commit
 	co = checkout
@@ -24,9 +25,14 @@
 	wt = worktree
 	mitm = "!f(){ git config --global http.proxy 'http://127.0.0.1:8080'; }; f"
 	unmitm = "!f(){ git config --global --unset http.proxy; }; f"
+	open-discussion-for-release = "!f() { case \"$1\" in *.vfs.[0-9]*[0-9]) repo=microsoft/git;; *.windows.[0-9]*) repo=git-for-windows/git;; *) \"Need a release\" >&2; exit 1;; esac; id=$(gh api repos/$repo/releases/tags/$1 --jq .id) && test -n \"$id\" || { echo \"Could not get release ID\" >&2; exit 1; } && gh api -XPATCH repos/$repo/releases/$id -f discussion_category_name=Announcements --jq .discussion_url; }; f"
+	stage-and-commit-fixup = "!f() {\n  e_opt=;\n  case \"$1\"\n  in -e|-s|-es|-se)\n    e_opt=$1\n    shift\n    ;;\n  esac\n  export e_opt\n  if test -z \"$(git diff --cached)\"\n  then\n    git add -p ||\n      return $?\n    if test -z \"$(git diff --cached)\"\n    then\n      echo 'Nothing staged!'\n      return 1\n    fi\n  fi &&\n  if test $# = 0\n  then\n    for rev in @{u} origin/HEAD HEAD\n    do\n      git rev-parse --verify $rev >/dev/null 2>&1 ||\n      continue\n      test HEAD = $rev && set $rev -- ||\n      set $rev.. --\n    done\n  fi &&\n  pickaxe_args=\"$(git diff --cached -U1 |\n    sed -ne '/^--- a\\//{s/^-* a\\/\\(.*\\)/'\\''\\1'\\''/;x}' \\\n      -e '/^@@ -/{s/^@@ -\\([^, ]*\\),\\([^ ]*\\).*/-L \\1,+\\2/;s/^@@ -\\([^,]*\\) .*/-L \\1,+1/;G;s/\\n/:/g;p}' |\n    tr '\\n' ' ') $@\" &&\n  export pickaxe_args &&\n  pager=core.pager='out=\"$(cat)\" &&\n    commits=$(echo \"$out\" | sed -n \"s/^\\x1b[^m]*mcommit \\([0-9a-f][0-9a-f]*\\).*/\\1/p\") &&\n    case \"$commits\"\n    in *[!0-9a-f]*)\n      while true\n      do\n        echo \"$commits\" | cat -n\n        echo \"Which one?\"\n        read answer </dev/tty\n        if test l = \"$answer\"\n        then\n          eval git -c core.pager=\\\"less -FRX\\\" log \"$pickaxe_args\"\n        fi\n        answer=\"$(echo \"$commits\" | sed -n \"${answer:-0}p\" 2>/dev/null)\"\n        if test -n \"$answer\"\n        then\n          git commit $e_opt --fixup \"$answer\"\n          break\n        fi\n      done\n      ;;\n    *)\n      git commit $e_opt --fixup \"$commits\"\n      ;;\n    esac' &&\n  eval git -c \\\"\\$pager\\\" -p log --color $pickaxe_args\n  if test -n \"$e_opt\" && test vscode = \"$TERM_PROGRAM\"\n  then\n    stty echo\n    stty erase ^?\n    stty sane\n  fi\n}; f"
 [fetch]
 	prune = true
 [init]
 	defaultBranch = main
 [rebase]
 	autosquash = true
+[credential]
+	msauthUseBroker = true
+	azreposCredentialType = oauth
