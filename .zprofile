@@ -1,11 +1,15 @@
 # Homebrew
-eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+if [[ -f "/opt/homebrew/bin/brew" ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+fi
 
 # Local binaries
 export PATH="$HOME/bin:$PATH"
 
 # .NET SDK
-export DOTNET_ROOT="/opt/homebrew/opt/dotnet/libexec"
+if [[ -d "/opt/homebrew/opt/dotnet/libexec" ]]; then
+    export DOTNET_ROOT="/opt/homebrew/opt/dotnet/libexec"
+fi
 
 # .NET Global Tools
 export PATH="$HOME/.dotnet/tools:$PATH"
