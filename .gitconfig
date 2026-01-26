@@ -36,3 +36,6 @@
 [credential]
 	msauthUseBroker = true
 	azreposCredentialType = oauth
+[user]
+	name = Matthew John Cheetham
+	email = mjcheetham@outlook.com
