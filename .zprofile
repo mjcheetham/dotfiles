@@ -7,8 +7,8 @@ fi
 export PATH="$HOME/bin:$PATH"
 
 # .NET SDK
-if [[ -d "/opt/homebrew/opt/dotnet/libexec" ]]; then
-    export DOTNET_ROOT="/opt/homebrew/opt/dotnet/libexec"
+if [[ -d "$(dirname $(which dotnet))" ]]; then
+    export DOTNET_ROOT="$(dirname $(which dotnet))"
 fi
 
 # .NET Global Tools
