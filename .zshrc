@@ -22,9 +22,12 @@ setopt prompt_subst
 PROMPT="%F{green}%n@%m%f %F{yellow}%~%f %F{blue}\${vcs_info_msg_0_}%f
 %# "
 
+# Colourised output
+export CLICOLOR=1
+
 # Custom Aliases
 alias dotfiles="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
-alias ll="ls -l"
+alias ll="ls -lh"
 alias dn=dotnet
 alias dnb="dotnet build"
 alias dnr="dotnet run"
